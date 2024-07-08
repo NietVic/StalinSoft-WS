@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="nl">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StalinSoft - Producten</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      height: 100%;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      font-family: Arial, sans-serif;
+      background-color: #fcfcfc;
+      /* Light gray */
+    }
+
+    .wrapper {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    header {
+      background-color: #212529;
+      /* Dark gray */
+      color: #fff;
+      padding: 10px 0;
+    }
+
+    header .container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1200px;
+      margin: auto;
+      padding: 0 20px;
+    }
+
+    header h1 {
+      margin: 0;
+      display: flex;
+      align-items: center;
+    }
+
+    header h1 img {
+      margin-right: 10px;
+    }
+
+    nav ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      align-items: center;
+    }
+
+    nav ul li {
+      margin-left: 20px;
+    }
+
+    nav ul li a {
+      color: #fff;
+      text-decoration: none;
+      padding: 5px 10px;
+    }
+
+    nav ul li a:hover {
+      background-color: #343a40;
+      /* Darker gray on hover */
+      border-radius: 5px;
+    }
+
+    main {
+      flex: 1;
+      padding: 20px 0;
+    }
+
+    main .container {
+      max-width: 1200px;
+      margin: auto;
+      padding: 0 20px;
+    }
+
+    section {
+      margin-bottom: 40px;
+    }
+
+    h2 {
+      margin-top: 0;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    ul li {
+      margin: 5px 0;
+    }
+
+    ul.product-list {
+      list-style: none;
+      padding: 0;
+    }
+
+    ul.product-list li {
+      margin: 20px 0;
+      padding: 20px;
+      background-color: #fff;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+
+    ul.product-list li h3 {
+      margin-bottom: 10px;
+    }
+
+    footer {
+      background-color: #212529;
+      /* Dark gray */
+      color: #fff;
+      text-align: center;
+      padding: 10px 0;
+    }
+
+    footer .container {
+      max-width: 1200px;
+      margin: auto;
+      padding: 0 20px;
+    }
+
+    /* Add these to your existing style.css file */
+
+    /* Form Container */
+    .form-container {
+      max-width: 400px;
+      margin: auto;
+      padding: 20px;
+      background-color: #fff;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Toggle Buttons */
+    .form-toggle {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .form-toggle button {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      background-color: #ddd;
+      cursor: pointer;
+    }
+
+    .form-toggle button.active {
+      background-color: #212529;
+      color: #fff;
+    }
+
+    /* Form Elements */
+    form {
+      display: flex;
+      flex-direction: column;
+    }
+
+    form label {
+      margin-bottom: 5px;
+    }
+
+    form input[type="text"],
+    form input[type="email"],
+    form input[type="password"] {
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    form input[type="submit"] {
+      padding: 10px;
+      background-color: #212529;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    form input[type="submit"]:hover {
+      background-color: #343a40;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrapper">
+    <header>
+      <div class="container">
+        <h1><img src="icon.png" height="35">StalinSoft</h1>
+        <nav>
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="products.html">Producten</a></li>
+            <li><a href="#">Contact</a></li>
+            <li><a href="account.html">Account</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+    <main>
+      <div class="container">
+        <section>
+          <h2>Onze Producten</h2>
+          <ul class="product-list">
+            <li>
+              <h3>CommunistCoder</h3>
+              <p>De enige code-editor die je productiviteit op een geplande manier organiseert! Geen fouten toegestaan.
+              </p>
+            </li>
+            <li>
+              <h3>ProletariatPlanner</h3>
+              <p>Een planningstool die je tijd indeelt zoals de partij dat wil. Altijd productief, altijd correct.</p>
+            </li>
+            <li>
+              <h3>RedRevolutionSpreadsheet</h3>
+              <p>Een spreadsheet-programma dat je cijfers controleert en corrigeert volgens de juiste ideologie.</p>
+            </li>
+            <li>
+              <h3>MarxMail</h3>
+              <p>Een e-mailprogramma dat al je berichten filtert voor revolutionaire inhoud. Alle spam wordt direct
+                gedeletet.</p>
+            </li>
+            <li>
+              <h3>DictatorDatabase</h3>
+              <p>Beheer je gegevens zoals een echte dictator. Alleen de juiste data wordt bewaard, de rest wordt
+                geëlimineerd.</p>
+            </li>
+          </ul>
+        </section>
+      </div>
+    </main>
+    <footer>
+      <div class="container">
+        <p>&copy; 2024 StalinSoft. Alle rechten voorbehouden.</p>
+      </div>
+    </footer>
+  </div>
+</body>
+
+</html>

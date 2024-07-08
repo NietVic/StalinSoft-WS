@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="nl">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StalinSoft - Account</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      height: 100%;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      font-family: Arial, sans-serif;
+      background-color: #fcfcfc;
+      /* Light gray */
+    }
+
+    .wrapper {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    header {
+      background-color: #212529;
+      /* Dark gray */
+      color: #fff;
+      padding: 10px 0;
+    }
+
+    header .container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1200px;
+      margin: auto;
+      padding: 0 20px;
+    }
+
+    header h1 {
+      margin: 0;
+      display: flex;
+      align-items: center;
+    }
+
+    header h1 img {
+      margin-right: 10px;
+    }
+
+    nav ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      align-items: center;
+    }
+
+    nav ul li {
+      margin-left: 20px;
+    }
+
+    nav ul li a {
+      color: #fff;
+      text-decoration: none;
+      padding: 5px 10px;
+    }
+
+    nav ul li a:hover {
+      background-color: #343a40;
+      /* Darker gray on hover */
+      border-radius: 5px;
+    }
+
+    main {
+      flex: 1;
+      padding: 20px 0;
+    }
+
+    main .container {
+      max-width: 1200px;
+      margin: auto;
+      padding: 0 20px;
+    }
+
+    section {
+      margin-bottom: 40px;
+    }
+
+    h2 {
+      margin-top: 0;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    ul li {
+      margin: 5px 0;
+    }
+
+    ul.product-list {
+      list-style: none;
+      padding: 0;
+    }
+
+    ul.product-list li {
+      margin: 20px 0;
+      padding: 20px;
+      background-color: #fff;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+
+    ul.product-list li h3 {
+      margin-bottom: 10px;
+    }
+
+    footer {
+      background-color: #212529;
+      /* Dark gray */
+      color: #fff;
+      text-align: center;
+      padding: 10px 0;
+    }
+
+    footer .container {
+      max-width: 1200px;
+      margin: auto;
+      padding: 0 20px;
+    }
+
+    /* Add these to your existing style.css file */
+
+    /* Form Container */
+    .form-container {
+      max-width: 400px;
+      margin: auto;
+      padding: 20px;
+      background-color: #fff;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Toggle Buttons */
+    .form-toggle {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .form-toggle button {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      background-color: #ddd;
+      cursor: pointer;
+    }
+
+    .form-toggle button.active {
+      background-color: #212529;
+      color: #fff;
+    }
+
+    /* Form Elements */
+    form {
+      display: flex;
+      flex-direction: column;
+    }
+
+    form label {
+      margin-bottom: 5px;
+    }
+
+    form input[type="text"],
+    form input[type="email"],
+    form input[type="password"] {
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    form input[type="submit"] {
+      padding: 10px;
+      background-color: #212529;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    form input[type="submit"]:hover {
+      background-color: #343a40;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrapper">
+    <header>
+      <div class="container">
+        <h1><img src="icon.png" height="35">StalinSoft</h1>
+        <nav>
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="products.html">Producten</a></li>
+            <li><a href="#">Contact</a></li>
+            <li><a href="account.html">Account</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+    <main>
+      <div class="container">
+        <section>
+          <h2>Accountbeheer</h2>
+          <div class="form-container">
+            <div class="form-toggle">
+              <button id="login-toggle" onclick="toggleLogin()">Inloggen</button>
+              <button id="register-toggle" onclick="toggleRegister()">Registreren</button>
+            </div>
+            <div id="login-form">
+              <form id="login-form" onsubmit="login(event)">
+                <label for="login-username">Gebruikersnaam:</label>
+                <input type="text" id="login-username" name="login-username" required><br><br>
+                <label for="login-password">Wachtwoord:</label>
+                <input type="password" id="login-password" name="login-password" required><br><br>
+                <input type="submit" value="Inloggen">
+              </form>
+            </div>
+            <div id="register-form" style="display:none;">
+              <form id="register-form" onsubmit="register(event)">
+                <label for="register-username">Gebruikersnaam:</label>
+                <input type="text" id="register-username" name="register-username" required><br><br>
+                <label for="register-password">Wachtwoord:</label>
+                <input type="password" id="register-password" name="register-password" required><br><br>
+                <input type="submit" value="Registreren">
+              </form>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+    <footer>
+      <div class="container">
+        <p>&copy; 2024 StalinSoft. Alle rechten voorbehouden.</p>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    function toggleLogin() {
+      document.getElementById("login-form").style.display = "block";
+      document.getElementById("register-form").style.display = "none";
+      document.getElementById("login-toggle").classList.add("active");
+      document.getElementById("register-toggle").classList.remove("active");
+    }
+
+    function toggleRegister() {
+      document.getElementById("login-form").style.display = "none";
+      document.getElementById("register-form").style.display = "block";
+      document.getElementById("register-toggle").classList.add("active");
+      document.getElementById("login-toggle").classList.remove("active");
+    }
+
+    function login(event) {
+      event.preventDefault(); // Prevent form submission
+
+      // Collect login form data
+      const username = document.getElementById("login-username").value;
+      const password = document.getElementById("login-password").value;
+
+      // Example of handling login data (you should implement this on your server)
+      console.log("Logging in with username:", username, "and password:", password);
+
+      // You can send this data to your server for authentication if needed
+      fetch('https://stalinsoft.top/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ username, password })
+      })
+        .then(response => {
+          if (response.ok) {
+            location.reload();
+            return response.text();
+          } else {
+            throw new Error('Registration failed');
+          }
+        })
+        .then(data => {
+          console.log('Registration successful:', data);
+          // Optionally show a success message or redirect to another page
+        })
+        .catch(error => {
+          console.error('Registration error:', error);
+          // Handle error, show error message, etc.
+        });
+    }
+
+    function register(event) {
+      event.preventDefault(); // Prevent form submission
+
+      const username = document.getElementById("register-username").value;
+      const password = document.getElementById("register-password").value;
+
+      fetch('https://stalinsoft.top/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ username, password })
+      })
+        .then(response => {
+          if (response.ok) {
+            return response.text();
+          } else {
+            throw new Error('Registration failed');
+          }
+        })
+        .then(data => {
+          console.log('Registration successful:', data);
+          // Optionally show a success message or redirect to another page
+        })
+        .catch(error => {
+          console.error('Registration error:', error);
+          // Handle error, show error message, etc.
+        });
+    }
+
+  </script>
+</body>
+
+</html>
