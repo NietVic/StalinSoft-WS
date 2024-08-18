@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DictatorDatabase User Manual</title>
+</head>
+<body>
+    <h1>DictatorDatabase User Manual</h1>
+    <h2>Introduction</h2>
+    <p>DictatorDatabase is a simple JSON-based database server that allows for basic CRUD operations and rollback functionality. It is designed for easy integration with web applications and services through a RESTful API.</p>
+    
+    <hr>
+
+    <h2>Table of Contents</h2>
+    <ul>
+        <li><a href="#getting-started">Getting Started</a></li>
+        <li><a href="#configuration">Configuration</a></li>
+        <li><a href="#api-endpoints">API Endpoints</a>
+            <ul>
+                <li><a href="#get-data">GET /data</a></li>
+                <li><a href="#get-history">GET /history</a></li>
+                <li><a href="#get-searchsearch_terms">GET /search/&lt;search_terms&gt;</a></li>
+                <li><a href="#post-data">POST /data</a></li>
+                <li><a href="#post-datarollback">POST /data/rollback</a></li>
+                <li><a href="#put-dataindex">PUT /data/&lt;index&gt;</a></li>
+                <li><a href="#delete-dataindex">DELETE /data/&lt;index&gt;</a></li>
+            </ul>
+        </li>
+        <li><a href="#error-handling">Error Handling</a></li>
+        <li><a href="#logging">Logging</a></li>
+        <li><a href="#integration-guide">Integration Guide</a>
+            <ul>
+                <li><a href="#http-communication">HTTP Communication</a></li>
+                <li><a href="#example-use-cases">Example Use Cases</a></li>
+            </ul>
+        </li>
+    </ul>
+
+    <hr>
+
+    <h2 id="getting-started">Getting Started</h2>
+    <ol>
+        <li><strong>Install Dependencies</strong>: Ensure you have Python 3.12 or later and install the required Python packages:
+            <pre><code>pip install pyyaml</code></pre>
+        </li>
+        <li><strong>Configure the Server</strong>: Create a <code>config.yml</code> file in the same directory as the server script with the following content:
+            <pre><code>server:
+  port: 8000
+
+database:
+  file_path: database.ddb
+
+logging:
+  log_file: server.log
+</code></pre>
+        </li>
+        <li><strong>Run the Server</strong>:
+            <pre><code>python databaseserver.py</code></pre>
+            The server will start and listen on the port specified in <code>config.yml</code> (default: 8000).
+        </li>
+    </ol>
+
+    <h2 id="configuration">Configuration</h2>
+    <p>The server's behavior is controlled via the <code>config.yml</code> file. Here’s what each section means:</p>
+    <ul>
+        <li><strong>server</strong>: Contains server-specific settings.
+            <ul>
+                <li><code>port</code>: The port on which the server will listen for incoming requests.</li>
+            </ul>
+        </li>
+        <li><strong>database</strong>: Defines the database file path.
+            <ul>
+                <li><code>file_path</code>: The file where the database is stored. The file should be accessible and writable.</li>
+            </ul>
+        </li>
+        <li><strong>logging</strong>: Configures logging.
+            <ul>
+                <li><code>log_file</code>: The file where logs will be written. Ensure this file is writable.</li>
+            </ul>
+        </li>
+    </ul>
+
+    <h2 id="api-endpoints">API Endpoints</h2>
+    <h3 id="get-data">GET /data</h3>
+    <p><strong>Description</strong>: Retrieves the entire dataset excluding the history.</p>
+    <p><strong>Response</strong>:<br>
+        <strong>Status Code</strong>: 200 OK<br>
+        <strong>Content-Type</strong>: application/json<br>
+        <strong>Body</strong>:<br>
+        <pre><code>{
+  "data": [...]
+}</code></pre>
+    </p>
+
+    <h3 id="get-history">GET /history</h3>
+    <p><strong>Description</strong>: Retrieves the history of changes made to the database.</p>
+    <p><strong>Response</strong>:<br>
+        <strong>Status Code</strong>: 200 OK<br>
+        <strong>Content-Type</strong>: application/json<br>
+        <strong>Body</strong>:<br>
+        <pre><code>[
+  {
+    "action": "add",
+    "data": {...},
+    "timestamp": "ISO8601_TIMESTAMP",
+    "old_data": null
+  },
+  ...
+]</code></pre>
+    </p>
+
+    <h3 id="get-searchsearch_terms">GET /search/&lt;search_terms&gt;</h3>
+    <p><strong>Description</strong>: Searches the database for entries matching the provided search terms.</p>
+    <p><strong>Response</strong>:<br>
+        <strong>Status Code</strong>: 200 OK<br>
+        <strong>Content-Type</strong>: application/json<br>
+        <strong>Body</strong>:<br>
+        <pre><code>[
+  {
+    "matching_key": "matching_value",
+    ...
+  }
+]</code></pre>
+    </p>
+
+    <h3 id="post-data">POST /data</h3>
+    <p><strong>Description</strong>: Adds a new entry to the database.</p>
+    <p><strong>Request Body</strong>:<br>
+        <strong>Content-Type</strong>: application/json<br>
+        <strong>Body</strong>:<br>
+        <pre><code>{
+  "key": "value",
+  ...
+}</code></pre>
+    </p>
+    <p><strong>Response</strong>:<br>
+        <strong>Status Code</strong>: 200 OK<br>
+        <strong>Content-Type</strong>: application/json<br>
+        <strong>Body</strong>:<br>
+        <pre><code>{
+  "message": "Data added successfully"
+}</code></pre>
+    </p>
+
+    <h3 id="post-datarollback">POST /data/rollback</h3>
+    <p><strong>Description</strong>: Rolls back the last change made to the database.</p>
+    <p><strong>Response</strong>:<br>
+        <strong>Status Code</strong>: 200 OK<br>
+        <strong>Content-Type</strong>: application/json<br>
+        <strong>Body</strong>:<br>
+        <pre><code>{
+  "message": "Rollback successful"
+}</code></pre>
+    </p>
+
+    <h3 id="put-dataindex">PUT /data/&lt;index&gt;</h3>
+    <p><strong>Description</strong>: Updates an existing entry in the database.</p>
+    <p><strong>Request Body</strong>:<br>
+        <strong>Content-Type</strong>: application/json<br>
+        <strong>Body</strong>:<br>
+        <pre><code>{
+  "key": "new_value",
+  ...
+}</code></pre>
+    </p>
+    <p><strong>Response</strong>:<br>
+        <strong>Status Code</strong>: 200 OK<br>
+        <strong>Content-Type</strong>: application/json<br>
+        <strong>Body</strong>:<br>
+        <pre><code>{
+  "message": "Data updated successfully"
+}</code></pre>
+    </p>
+
+    <h3 id="delete-dataindex">DELETE /data/&lt;index&gt;</h3>
+    <p><strong>Description</strong>: Deletes an entry from the database.</p>
+    <p><strong>Response</strong>:<br>
+        <strong>Status Code</strong>: 200 OK<br>
+        <strong>Content-Type</strong>: application/json<br>
+        <strong>Body</strong>:<br>
+        <pre><code>{
+  "message": "Data deleted successfully"
+}</code></pre>
+    </p>
+
+    <h2 id="error-handling">Error Handling</h2>
+    <ul>
+        <li><strong>400 Bad Request</strong>: Indicates malformed request or invalid data.</li>
+        <li><strong>404 Not Found</strong>: The requested resource could not be found.</li>
+        <li><strong>500 Internal Server Error</strong>: An unexpected server error occurred.</li>
+    </ul>
+
+    <h2 id="logging">Logging</h2>
+    <p>The server logs its activity to the file specified in <code>config.yml</code> under <code>logging.log_file</code>. This includes:</p>
+    <ul>
+        <li>Requests and responses</li>
+        <li>Errors and warnings</li>
+        <li>Status updates</li>
+    </ul>
+
+    <h2 id="integration-guide">Integration Guide</h2>
+    <h3 id="http-communication">HTTP Communication</h3>
+    <p>To interact with the DictatorDatabase server, use HTTP methods to communicate with the following endpoints:</p>
+    <ul>
+        <li><strong>GET</strong>: Retrieve data or history, perform searches.</li>
+        <li><strong>POST</strong>: Add new data, perform rollbacks.</li>
+        <li><strong>PUT</strong>: Update existing data.</li>
+        <li><strong>DELETE</strong>: Remove data.</li>
+    </ul>
+    <p><strong>Example using <code>curl</code>:</strong></p>
+    <ul>
+        <li><strong>GET /data</strong>:<br>
+            <pre><code>curl -X GET http://localhost:8000/data</code></pre>
+        </li>
+        <li><strong>POST /data</strong>:<br>
+            <pre><code>curl -X POST http://localhost:8000/data -H "Content-Type: application/json" -d '{"key": "value"}'</code></pre>
+        </li>
+        <li><strong>GET /search/example</strong>:<br>
+            <pre><code>curl -X GET http://localhost:8000/search/example</code></pre>
+        </li>
+        <li><strong>PUT /data/0</strong>:<br>
+            <pre><code>curl -X PUT http://localhost:8000/data/0 -H "Content-Type: application/json" -d '{"key": "new_value"}'</code></pre>
+        </li>
+        <li><strong>DELETE /data/0</strong>:<br>
+            <pre><code>curl -X DELETE http://localhost:8000/data/0</code></pre>
+        </li>
+    </ul>
+
+    <h3 id="example-use-cases">Example Use Cases</h3>
+    <ul>
+        <li><strong>Adding Data</strong>: Integrate with a web application to allow users to submit data entries via forms.</li>
+        <li><strong>Retrieving Data</strong>: Use the <code>/data</code> endpoint to populate user interfaces or generate reports.</li>
+        <li><strong>Searching Data</strong>: Implement search functionality in applications to filter and display relevant entries from the database.</li>
+        <li><strong>Rollback Functionality</strong>: Provide users with an option to revert changes, useful for undo features in applications.</li>
+    </ul>
+
+    <p>This manual should help you understand and use DictatorDatabase effectively. For any issues or further assistance, refer to the server logs or contact the support team.</p>
+</body>
+</html>
