@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DictatorDatabase Gebruikershandleiding</title>
+</head>
+<body>
+    <h1>DictatorDatabase Gebruikershandleiding</h1>
+    <h2>Inleiding</h2>
+    <p>DictatorDatabase is een eenvoudige JSON-gebaseerde databaseserver die basis CRUD-bewerkingen en rollback-functionaliteit biedt. Het is ontworpen voor eenvoudige integratie met webapplicaties en services via een RESTful API.</p>
+    
+    <hr>
+
+    <h2>Inhoudsopgave</h2>
+    <ul>
+        <li><a href="#getting-started">Aan de slag</a></li>
+        <li><a href="#configuration">Configuratie</a></li>
+        <li><a href="#api-endpoints">API Endpoints</a>
+            <ul>
+                <li><a href="#get-data">GET /data</a></li>
+                <li><a href="#get-history">GET /history</a></li>
+                <li><a href="#get-searchsearch_terms">GET /search/&lt;search_terms&gt;</a></li>
+                <li><a href="#post-data">POST /data</a></li>
+                <li><a href="#post-datarollback">POST /data/rollback</a></li>
+                <li><a href="#put-dataindex">PUT /data/&lt;index&gt;</a></li>
+                <li><a href="#delete-dataindex">DELETE /data/&lt;index&gt;</a></li>
+            </ul>
+        </li>
+        <li><a href="#error-handling">Foutafhandeling</a></li>
+        <li><a href="#logging">Logging</a></li>
+        <li><a href="#integration-guide">Integratiehandleiding</a>
+            <ul>
+                <li><a href="#http-communication">HTTP Communicatie</a></li>
+                <li><a href="#example-use-cases">Voorbeeldtoepassingen</a></li>
+            </ul>
+        </li>
+    </ul>
+
+    <hr>
+
+    <h2 id="getting-started">Aan de slag</h2>
+    <ol>
+        <li><strong>Installeer Afhankelijkheden</strong>: Zorg ervoor dat je Python 3.12 of later hebt en installeer de benodigde Python-pakketten:
+            <pre><code>pip install pyyaml</code></pre>
+        </li>
+        <li><strong>Configureer de Server</strong>: Maak een <code>config.yml</code> bestand in dezelfde directory als het server script met de volgende inhoud:
+            <pre><code>server:
+  port: 8000
+
+database:
+  file_path: database.ddb
+
+logging:
+  log_file: server.log
+</code></pre>
+        </li>
+        <li><strong>Start de Server</strong>:
+            <pre><code>python databaseserver.py</code></pre>
+            De server start en luistert op de poort die is opgegeven in <code>config.yml</code> (standaard: 8000).
+        </li>
+    </ol>
+
+    <h2 id="configuration">Configuratie</h2>
+    <p>Het gedrag van de server wordt gecontroleerd via het <code>config.yml</code> bestand. Hier is wat elke sectie betekent:</p>
+    <ul>
+        <li><strong>server</strong>: Bevat server-specifieke instellingen.
+            <ul>
+                <li><code>port</code>: De poort waarop de server luistert naar binnenkomende verzoeken.</li>
+            </ul>
+        </li>
+        <li><strong>database</strong>: Definieert het database bestandspad.
+            <ul>
+                <li><code>file_path</code>: Het bestand waarin de database is opgeslagen. Het bestand moet toegankelijk en beschrijfbaar zijn.</li>
+            </ul>
+        </li>
+        <li><strong>logging</strong>: Configureert logging.
+            <ul>
+                <li><code>log_file</code>: Het bestand waarin logs worden geschreven. Zorg ervoor dat dit bestand beschrijfbaar is.</li>
+            </ul>
+        </li>
+    </ul>
+
+    <h2 id="api-endpoints">API Endpoints</h2>
+    <h3 id="get-data">GET /data</h3>
+    <p><strong>Omschrijving</strong>: Haalt de volledige dataset op, exclusief de geschiedenis.</p>
+    <p><strong>Reactie</strong>:<br>
+        <strong>Status Code</strong>: 200 OK<br>
+        <strong>Content-Type</strong>: application/json<br>
+        <strong>Body</strong>:<br>
+        <pre><code>{
+  "data": [...]
+}</code></pre>
+    </p>
+
+    <h3 id="get-history">GET /history</h3>
+    <p><strong>Omschrijving</strong>: Haalt de geschiedenis van wijzigingen aan de database op.</p>
+    <p><strong>Reactie</strong>:<br>
+        <strong>Status Code</strong>: 200 OK<br>
+        <strong>Content-Type</strong>: application/json<br>
+        <strong>Body</strong>:<br>
+        <pre><code>[
+  {
+    "action": "add",
+    "data": {...},
+    "timestamp": "ISO8601_TIMESTAMP",
+    "old_data": null
+  },
+  ...
+]</code></pre>
+    </p>
+
+    <h3 id="get-searchsearch_terms">GET /search/&lt;search_terms&gt;</h3>
+    <p><strong>Omschrijving</strong>: Doorzoekt de database naar gegevens die overeenkomen met de opgegeven zoektermen.</p>
+    <p><strong>Reactie</strong>:<br>
+        <strong>Status Code</strong>: 200 OK<br>
+        <strong>Content-Type</strong>: application/json<br>
+        <strong>Body</strong>:<br>
+        <pre><code>[
+  {
+    "matching_key": "matching_value",
+    ...
+  }
+]</code></pre>
+    </p>
+
+    <h3 id="post-data">POST /data</h3>
+    <p><strong>Omschrijving</strong>: Voegt een nieuwe invoer toe aan de database.</p>
+    <p><strong>Request Body</strong>:<br>
+        <strong>Content-Type</strong>: application/json<br>
+        <strong>Body</strong>:<br>
+        <pre><code>{
+  "key": "value",
+  ...
+}</code></pre>
+    </p>
+    <p><strong>Reactie</strong>:<br>
+        <strong>Status Code</strong>: 200 OK<br>
+        <strong>Content-Type</strong>: application/json<br>
+        <strong>Body</strong>:<br>
+        <pre><code>{
+  "message": "Data toegevoegd met succes"
+}</code></pre>
+    </p>
+
+    <h3 id="post-datarollback">POST /data/rollback</h3>
+    <p><strong>Omschrijving</strong>: Rol de laatste wijziging aan de database terug.</p>
+    <p><strong>Reactie</strong>:<br>
+        <strong>Status Code</strong>: 200 OK<br>
+        <strong>Content-Type</strong>: application/json<br>
+        <strong>Body</strong>:<br>
+        <pre><code>{
+  "message": "Rollback succesvol"
+}</code></pre>
+    </p>
+
+    <h3 id="put-dataindex">PUT /data/&lt;index&gt;</h3>
+    <p><strong>Omschrijving</strong>: Werk een bestaande invoer in de database bij.</p>
+    <p><strong>Request Body</strong>:<br>
+        <strong>Content-Type</strong>: application/json<br>
+        <strong>Body</strong>:<br>
+        <pre><code>{
+  "key": "new_value",
+  ...
+}</code></pre>
+    </p>
+    <p><strong>Reactie</strong>:<br>
+        <strong>Status Code</strong>: 200 OK<br>
+        <strong>Content-Type</strong>: application/json<br>
+        <strong>Body</strong>:<br>
+        <pre><code>{
+  "message": "Data succesvol bijgewerkt"
+}</code></pre>
+    </p>
+
+    <h3 id="delete-dataindex">DELETE /data/&lt;index&gt;</h3>
+    <p><strong>Omschrijving</strong>: Verwijdert een invoer uit de database.</p>
+    <p><strong>Reactie</strong>:<br>
+        <strong>Status Code</strong>: 200 OK<br>
+        <strong>Content-Type</strong>: application/json<br>
+        <strong>Body</strong>:<br>
+        <pre><code>{
+  "message": "Data succesvol verwijderd"
+}</code></pre>
+    </p>
+
+    <h2 id="error-handling">Foutafhandeling</h2>
+    <ul>
+        <li><strong>400 Bad Request</strong>: Geeft een verkeerd verzoek of ongeldige gegevens aan.</li>
+        <li><strong>404 Not Found</strong>: De opgevraagde bron kon niet worden gevonden.</li>
+        <li><strong>500 Internal Server Error</strong>: Er is een onverwachte serverfout opgetreden.</li>
+    </ul>
+
+    <h2 id="logging">Logging</h2>
+    <p>De server logt zijn activiteiten naar het bestand dat is opgegeven in <code>config.yml</code> onder <code>logging.log_file</code>. Dit omvat:</p>
+    <ul>
+        <li>Verzoeken en antwoorden</li>
+        <li>Fouten en waarschuwingen</li>
+        <li>Statusupdates</li>
+    </ul>
+
+    <h2 id="integration-guide">Integratiehandleiding</h2>
+    <h3 id="http-communication">HTTP Communicatie</h3>
+    <p>Om met de DictatorDatabase server te communiceren, gebruik je HTTP-methoden om met de volgende eindpunten te communiceren:</p>
+    <ul>
+        <li><strong>GET</strong>: Haal gegevens of geschiedenis op, voer zoekopdrachten uit.</li>
+        <li><strong>POST</strong>: Voeg nieuwe gegevens toe, voer rollbacks uit.</li>
+        <li><strong>PUT</strong>: Werk bestaande gegevens bij.</li>
+        <li><strong>DELETE</strong>: Verwijder gegevens.</li>
+    </ul>
+    <p><strong>Voorbeeld met <code>curl</code>:</strong></p>
+    <ul>
+        <li><strong>GET /data</strong>:<br>
+            <pre><code>curl -X GET http://localhost:8000/data</code></pre>
+        </li>
+        <li><strong>POST /data</strong>:<br>
+            <pre><code>curl -X POST http://localhost:8000/data -H "Content-Type: application/json" -d '{"key": "value"}'</code></pre>
+        </li>
+        <li><strong>GET /search/example</strong>:<br>
+            <pre><code>curl -X GET http://localhost:8000/search/example</code></pre>
+        </li>
+        <li><strong>PUT /data/0</strong>:<br>
+            <pre><code>curl -X PUT http://localhost:8000/data/0 -H "Content-Type: application/json" -d '{"key": "new_value"}'</code></pre>
+        </li>
+        <li><strong>DELETE /data/0</strong>:<br>
+            <pre><code>curl -X DELETE http://localhost:8000/data/0</code></pre>
+        </li>
+    </ul>
+
+    <h3 id="example-use-cases">Voorbeeldtoepassingen</h3>
+    <ul>
+        <li><strong>Gegevens Toevoegen</strong>: Integreer met een webapplicatie om gebruikers in staat te stellen gegevensinvoer via formulieren in te dienen.</li>
+        <li><strong>Gegevens Ophalen</strong>: Gebruik de <code>/data</code> eindpunt om gebruikersinterfaces te vullen of rapporten te genereren.</li>
+        <li><strong>Gegevens Doorzoeken</strong>: Implementeer zoekfunctionaliteit in toepassingen om relevante gegevens uit de database te filteren en weer te geven.</li>
+        <li><strong>Rollback Functionaliteit</strong>: Bied gebruikers de mogelijkheid om wijzigingen terug te draaien, nuttig voor ongedaan maken functies in toepassingen.</li>
+    </ul>
+
+    <p>Deze handleiding zou je moeten helpen DictatorDatabase effectief te begrijpen en te gebruiken. Voor eventuele problemen of verdere assistentie, raadpleeg de serverlogs of neem contact op met het ondersteuningsteam.</p>
+</body>
+</html>
